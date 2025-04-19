@@ -1,0 +1,18 @@
+# pip install -r requirements.txt from project root
+
+# Google API libraries
+google-api-python-client==2.167.0
+google-auth-httplib2==0.2.0
+google-auth-oauthlib==1.2.1
+
+# Data processing
+pandas==2.2.3
+numpy==2.2.4
+
+# Text processing for ML
+nltk==3.9.1
+scikit-learn==1.6.1
+spacy==3.8.5
+
+# Development tools
+jupyter==1.1.1
