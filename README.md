@@ -10,6 +10,7 @@ Reduce effort of manual sorting
 In the case where the probability of an email is <= 75 % for any folder, put it into the "Unsorted" folder.
 
 # Sorted folders supported
+- Action required
 - Phone
 - Home internet
 - Bank account
