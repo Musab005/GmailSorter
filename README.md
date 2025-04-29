@@ -1,3 +1,13 @@
+# Motivation
+1) Wanted to develop a machine learning model for a practical use case.
+2) Wanted to work with Google Cloud
+3) Wanted to work with REST APIs.
+
+# Challenges
+Some emails don't really belong to any label. Have to make a hard decision to make a more general label and include
+different types of emails. Because to train the model need to have a large enough dataset. Worst case if confidentiality is < 95%
+i will just keep it in primary inbox for manual sorting. So its a win win
+
 # Project idea
 Developing a machine learning project to sort incoming emails into appropriate folders in my gmail account.
 I was tired of doing it manually and used to delay sorting new emails, and it ultimately accumulated to the backlog.
@@ -25,3 +35,5 @@ In the case where the probability of an email is <= 75 % for any folder, put it 
 - flight bookings
 - Insurance
 - Unsorted (need manual sorting)
+
+# Instructions for obtaining credentials
