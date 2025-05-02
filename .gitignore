@@ -1,3 +1,7 @@
 .env
 credentials/token.json
 credentials/client_secrets.json
+data/extracted_emails.json
+scripts/email.json
+scripts/1968d47ebb69da27.json
+scripts/1968962246afbfa0.json
