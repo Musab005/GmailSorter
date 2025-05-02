@@ -37,3 +37,6 @@ In the case where the probability of an email is <= 75 % for any folder, put it 
 - Unsorted (need manual sorting)
 
 # Instructions for obtaining credentials
+The file token.json stores the user's access and refresh tokens, and is
+created automatically when the authorization flow completes for the first
+time.

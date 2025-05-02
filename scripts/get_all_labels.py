@@ -14,24 +14,30 @@ def main():
     """Shows basic usage of the Gmail API.
   Lists the user's Gmail labels.
   """
-    creds = None
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
-    if os.path.exists("token.json"):
-        creds = Credentials.from_authorized_user_file("token.json", SCOPES)
-    # If there are no (valid) credentials available, let the user log in.
+    # Get absolute paths
+    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    token_path = os.path.join(base_dir, 'credentials', 'token.json')
+    secrets_path = os.path.join(base_dir, 'credentials', 'client_secrets.json')
+
+    creds = None
+
+    # Load credentials if token file exists
+    if os.path.exists(token_path):
+        creds = Credentials.from_authorized_user_file(token_path, SCOPES)
+
+    # If credentials are missing or invalid
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                "credentials/client_secrets.json", SCOPES
-            )
+            flow = InstalledAppFlow.from_client_secrets_file(secrets_path, SCOPES)
             creds = flow.run_local_server(port=0)
-        # Save the credentials for the next run
-        with open("token.json", "w") as token:
-            token.write(creds.to_json())
+        # Save the new token
+        with open(token_path, 'w') as token_file:
+            token_file.write(creds.to_json())
 
     try:
         # Call the Gmail API
