@@ -76,7 +76,7 @@ def main():
                 json.dump(extracted_email, f, indent=4)
 
             # Save original email
-            with open('email.json', 'w') as f:
+            with open('../data/sample_email.json', 'w') as f:
                 json.dump(results, f, indent=4)
         else:
             print("something went wrong")

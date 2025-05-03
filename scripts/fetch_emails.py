@@ -44,7 +44,7 @@ def main():
         results = service.users().messages().list(
             userId="me",
             maxResults=500,
-            includeSpamTrash="false"
+            includeSpamTrash=False
         ).execute()
         # if successful:
         # results = {
@@ -81,7 +81,7 @@ def main():
                 userId="me",
                 maxResults=500,
                 pageToken=next_page_token,
-                includeSpamTrash="false"
+                includeSpamTrash=False
             ).execute()
 
             messages = results.get("messages", [])
@@ -96,6 +96,7 @@ def main():
             next_page_token = results.get("nextPageToken", 0)
 
         # all ids retrieved at this point
+        print("number of emails retrieved: ", len(ids))
         extracted_emails = {
             "emails": []
         }
@@ -110,15 +111,6 @@ def main():
                 if results:
                     extracted_emails = extract(results, extracted_emails)
                     print("count: ", i)
-                    # payload = results.get("payload")
-                    # headers_list = payload.get("headers", [])
-                    # extracted_email = {}
-                    # if headers_list:
-                    #     for entry in headers_list:
-                    #         if entry.get("name") == "Subject":
-                    #             extracted_email['subject'] = entry.get("value")
-                    #             extracted_emails["emails"].append(extracted_email)
-
                 else:
                     print("something went wrong")
 

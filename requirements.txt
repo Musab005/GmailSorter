@@ -16,3 +16,4 @@ spacy==3.8.5
 
 # Development tools
 jupyter==1.1.1
+beautifulsoup4~=4.12.3
