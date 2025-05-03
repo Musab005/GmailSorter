@@ -3,4 +3,3 @@ credentials/token.json
 credentials/client_secrets.json
 data/extracted_emails.json
 data/sample_email.json
-data/processed_data.json
