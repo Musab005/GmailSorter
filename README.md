@@ -40,3 +40,6 @@ In the case where the probability of an email is <= 75 % for any folder, put it 
 The file token.json stores the user's access and refresh tokens, and is
 created automatically when the authorization flow completes for the first
 time.
+
+# Note
+On terminal, do `git rm --cached <file_path>` to untrack the file.
