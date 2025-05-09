@@ -2,12 +2,13 @@ import base64
 import json
 import os.path
 
+import pandas as pd
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-from src.fetch_labeled_emails import extract
+from src.email_extractor import extract_message
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://mail.google.com/", "https://www.googleapis.com/auth/gmail.labels",
@@ -16,9 +17,11 @@ SCOPES = ["https://mail.google.com/", "https://www.googleapis.com/auth/gmail.lab
 
 def main():
     # Get absolute paths
-    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    token_path = os.path.join(base_dir, 'credentials', 'token.json')
-    secrets_path = os.path.join(base_dir, 'credentials', 'client_secrets.json')
+    scripts_dir = os.path.dirname(os.path.abspath(__file__))
+    root_dir = os.path.dirname(scripts_dir)
+    extracted_emails_path = os.path.join(root_dir, "data/extracted_emails.csv")
+    token_path = os.path.join(root_dir, 'credentials', 'token.json')
+    secrets_path = os.path.join(root_dir, 'credentials', 'client_secrets.json')
 
     creds = None
 
@@ -97,9 +100,14 @@ def main():
 
         # all ids retrieved at this point
         print("number of emails retrieved: ", len(ids))
-        extracted_emails = {
-            "emails": []
+
+        data = {
+            "id": [],
+            "label": [],
+            "subject": [],
+            "text": []
         }
+
         for i in range(min(100, len(ids))):
             try:
                 # Call the Gmail API users.messages.get
@@ -109,7 +117,7 @@ def main():
                 ).execute()
 
                 if results:
-                    extracted_emails = extract(results, extracted_emails)
+                    extract_message(results, data)
                     print("count: ", i)
                 else:
                     print("something went wrong")
@@ -119,9 +127,12 @@ def main():
                 print(f"An error occurred: {error}")
 
         # for loop ends
-        output_path = os.path.join('data', 'extracted_emails.json')
-        with open(output_path, 'w') as outfile:
-            json.dump(extracted_emails, outfile, indent=4)
+        print(len(data['id']))
+        print(len(data['subject']))
+        print(len(data['label']))
+        print(len(data['text']))
+        df = pd.DataFrame(data)
+        df.to_csv(extracted_emails_path, index=False, encoding="utf-8")
 
     except HttpError as error:
         # TODO(developer) - Handle errors from gmail API.

@@ -53,8 +53,9 @@ def get_data(extracted_email, payload):
 def clean(text):
     # remove newline and carriage return characters
     cleaned = text.replace('\n', ' ').replace('\r', ' ')
-    # normalize whitespace
-    cleaned = re.sub(r'\s+', ' ', cleaned).strip()
-    cleaned = re.sub(r'‌', ' ', cleaned).strip()
+    cleaned = cleaned.replace('\u200c', ' ').replace('\u00a0', ' ')
+    # Collapse multiple spaces
+    cleaned = re.sub(r'\s+', ' ', cleaned)
 
     return cleaned
+
