@@ -3,20 +3,15 @@ import re
 
 import unicodedata
 from bs4 import BeautifulSoup
+from src.global_store import get_value
 
 
-## to csv
-#
-# # Example data
-# data = {
-#     "text": ["email 1 content", "email 2 content"],
-#     "label": ["work", "personal"]
-# }
-#
-# df = pd.DataFrame(data)
-#
-# # Write to CSV
-# df.to_csv("emails.csv", index=False, encoding="utf-8")
+def is_labelled(results):
+    labels = results.get('labelIds')
+    for label in labels:
+        if label.startswith("Label"):
+            return True
+    return False
 
 
 def extract_message(results, data):
@@ -36,7 +31,9 @@ def extract_message(results, data):
     appended = False
     for label in labels:
         if label.startswith("Label"):
-            data['label'].append(label)
+            data['label'].append(get_value(label))
+            # print("label id: ", label, "label name: ", get_value(label))
+            # data['label'].append(label)
             appended = True
     if not appended:
         data['label'].append("Dummy text")
@@ -78,7 +75,7 @@ def get_text(payload):
 
     if payload.get('parts'):
         for part in payload.get('parts'):
-            text = get_text(part)
+            text = get_text(part) + text
 
     return text
 
@@ -90,6 +87,8 @@ def clean(text):
     text = ''.join(' ' if unicodedata.category(c) == 'Zs' else c for c in text)
     # Explicitly replace NBSPs and zero-width characters
     text = text.replace('\u00A0', ' ').replace('\xa0', ' ').replace('\u200c', '')
+    # Remove all words that start with '\u'
+    text = re.sub(r'(\\u\w+|\\x\w+|&#\w+)', '', text)
     # Collapse all kinds of whitespace into a single space
     text = re.sub(r'\s+', ' ', text)
 

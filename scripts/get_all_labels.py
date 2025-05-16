@@ -1,3 +1,4 @@
+import json
 import os.path
 
 from google.auth.transport.requests import Request
@@ -5,9 +6,11 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from src.global_store import set_value, get_value
 
 # If modifying these scopes, delete the file token.json.
-SCOPES = ["https://mail.google.com/", "https://www.googleapis.com/auth/gmail.labels", "https://www.googleapis.com/auth/gmail.modify"]
+SCOPES = ["https://mail.google.com/", "https://www.googleapis.com/auth/gmail.labels",
+          "https://www.googleapis.com/auth/gmail.modify"]
 
 
 def main():
@@ -39,22 +42,26 @@ def main():
         with open(token_path, 'w') as token_file:
             token_file.write(creds.to_json())
 
+    map = {}
+
     try:
         # Call the Gmail API
         service = build("gmail", "v1", credentials=creds)
         results = service.users().labels().list(userId="me").execute()
         labels = results.get("labels", [])
-
         if not labels:
             print("No labels found.")
             return
-        print("Labels:")
         for label in labels:
-            print(label["name"], label["id"])
+            map[label['id']] = label['name']
+
 
     except HttpError as error:
         # TODO(developer) - Handle errors from gmail API.
         print(f"An error occurred: {error}")
+
+    with open(f"{base_dir}/data/labels.json", "w") as f:
+        json.dump(map, f, indent=4)
 
 
 if __name__ == "__main__":

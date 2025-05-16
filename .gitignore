@@ -7,3 +7,5 @@ data/sample_email.json
 /data/email-196a18e9e99b88fc.csv
 /data/sample-email.json
 /data/extracted_emails.csv
+/data/names.txt
+/src/global_store.py
