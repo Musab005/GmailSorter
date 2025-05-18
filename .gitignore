@@ -9,3 +9,4 @@ data/sample_email.json
 /data/extracted_emails.csv
 /data/names.txt
 /src/global_store.py
+/data
