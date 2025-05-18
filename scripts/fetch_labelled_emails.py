@@ -106,7 +106,7 @@ def main():
                         extract_message(results, data)
                         print("count: ", i)
                         count += 1
-                        if count == 100:
+                        if count == 1000:
                             break
                 else:
                     print("something went wrong")
