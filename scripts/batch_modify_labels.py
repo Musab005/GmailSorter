@@ -59,19 +59,6 @@ def main():
             q=query_email,
             includeSpamTrash="false"
         ).execute()
-        # results = {
-        #   "messages": [
-        #     {
-        #       object (Message)
-        #     }
-        #   ],
-        #   "nextPageToken": string,
-        #   "resultSizeEstimate": integer
-        # }
-        # where Message:
-        #   "id": string,
-        #   "threadId": string,
-        #
 
         # list of message objects
         messages = results.get("messages", [])
