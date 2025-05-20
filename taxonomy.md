@@ -1,44 +1,37 @@
 # Description of each label
 ### 1) Action required: 
-Any email that requires me to take an action. Cannot just ignore said emails. 
-### 2) Bank Accounts sub labels:
-All debit transaction records.
-### 3) Communauto:
+Any email that requires me to take an action. Cannot just ignore said emails. Priority #1
+### 2) Leads: 
+All emails that are important to read but not necessarily take an action. Priority #2
+### 3) Bank Accounts sub labels:
+All banking emails
+### 4) Bookings/Flights
+All flight bookings + reviews + promos/loyalty (excluding receipts)
+### 5) Bookings/Hotels
+All hotel bookings + reviews + promos/loyalty (excluding receipts)
+### 6) Bookings/Transport
+All transport (car, train, taxi, uber) bookings + reviews + promos/loyalty (excluding receipts)
+### 7) Bookings/Communauto
 Information about trips booked with communauto
-### 4) Credit Account:
-All credit transaction records
-### 5) Flights:
-All flight bookings + airline loyalty programs + airline promotional emails
-### 5) Insurance:
-Insurance related information + receipts + promotions
-### 6) Google/Cloud Platform:
-Anything related to my Google cloud account
-### 7) Google/Play Console:
-Anything related to my Google Play Console account
-### 5) Hotel Bookings:
-All hotel and airbnb bookings + hotel loyalty programs
-### 6) Fizz
-My subscriptions with Fizz and relevant updates + fizz marketing emails
-### 6) Fido
-My subscriptions with Fido and relevant updates + fido marketing emails
-### 6) Leads
-All conversations that do not fit into Action Required. These emails can be ignored if needed. They either acknowledge
-some information or are simply answers to my emails that I deem not important. Just regular updates and acknowledgements.
-### 6) Offers
+### 8) Appointments:
+All meeting/appointment/event/meetups confirmations and reminders and e-tickets
+### 9) Insurance:
+Home insurance updates + promos (excluding receipts)
+### 10) Fizz
+My subscriptions with Fizz and relevant updates + fizz marketing emails (excluding receipts)
+### 11) Fido
+My subscriptions with Fido and relevant updates + fido marketing emails (excluding receipts)
+### 12) Bills:
+Bills/payments to be made (those that are not automatic payments)
+### 13) Newsletters + promos
 All marketing and promotional emails that do not come under the separate labels (i.e. not fido/fizz/bank/flight/communauto marketing emails)
-### 6) Receipts
-All purchases/subscriptions/cancellations/refunds/delivery updates/reviews/requests submitted 
-### 6) Security
-All verification codes/account modifications/account creations/etc
-### 6) Investments sub labels
+### 14) Receipts
+All purchases/subscriptions/cancellations/refunds/delivery updates
+### 15) Security
+verification codes + account modifications + security alerts
+### 16) Sign ups ??
+automated replies for account sign ups
+### 17) Investments sub labels
 All investment records with respect to the company in the sub label + investment information + investment offers
-### 6) Marketing
-Promotional emails, , reviews
-
-### Confusions:
-1) Should I investment information + investment offers in the investment sub labels or into Offers??
-2) Security contains: Welcome to Google One, Welcome to launch good, welcome to cineplex acc, 
-3) Receipts: Get started with adobe acrobat pro, confirmation of claims history application
-4) Leads
-
-
+### 16) Delete
+Irrelevant emails, intend to delete
