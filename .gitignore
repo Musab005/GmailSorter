@@ -1,12 +1,4 @@
 .env
-credentials/token.json
-credentials/client_secrets.json
-data/extracted_emails.json
-data/sample_email.json
-/data/196a18e9e99b88fc.json
-/data/email-196a18e9e99b88fc.csv
-/data/sample-email.json
-/data/extracted_emails.csv
-/data/names.txt
+/credentials
 /src/global_store.py
 /data
