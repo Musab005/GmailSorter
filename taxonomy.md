@@ -1,37 +1,54 @@
-# Description of each label
-### 1) Action required: 
-Any email that requires me to take an action. Cannot just ignore said emails. Priority #1
-### 2) Leads: 
-All emails that are important to read but not necessarily take an action. Priority #2
-### 3) Bank Accounts sub labels:
-All banking emails
-### 4) Bookings/Flights
-All flight bookings + reviews + promos/loyalty (excluding receipts)
-### 5) Bookings/Hotels
-All hotel bookings + reviews + promos/loyalty (excluding receipts)
-### 6) Bookings/Transport
-All transport (car, train, taxi, uber) bookings + reviews + promos/loyalty (excluding receipts)
-### 7) Bookings/Communauto
-Information about trips booked with communauto
-### 8) Appointments:
-All meeting/appointment/event/meetups confirmations and reminders and e-tickets
-### 9) Insurance:
-Home insurance updates + promos (excluding receipts)
-### 10) Fizz
-My subscriptions with Fizz and relevant updates + fizz marketing emails (excluding receipts)
-### 11) Fido
-My subscriptions with Fido and relevant updates + fido marketing emails (excluding receipts)
-### 12) Bills:
-Bills/payments to be made (those that are not automatic payments)
-### 13) Newsletters + promos
-All marketing and promotional emails that do not come under the separate labels (i.e. not fido/fizz/bank/flight/communauto marketing emails)
-### 14) Receipts
-All purchases/subscriptions/cancellations/refunds/delivery updates
-### 15) Security
-verification codes + account modifications + security alerts
-### 16) Sign ups ??
-automated replies for account sign ups
-### 17) Investments sub labels
-All investment records with respect to the company in the sub label + investment information + investment offers
-### 16) Delete
-Irrelevant emails, intend to delete
+### 1) Admissions
+Admission applications to schools
+### 2) Appointments:
+Appointments to attend to
+### 3) apt search
+Apartment hunting
+### 4) Bank Accounts sub labels:
+Bank emails
+### 5) Bookings/Flights
+flight tickets, promos, loyalty accounts
+### 6) Bookings/Hotels
+hotel bookings, loyalty accounts
+### 7) Bookings/Transport
+Car, train, rideshare bookings
+### 8) Bookings/Communauto
+Communauto bookings
+### 9) Events and Tickets:
+Entertainment, event registration, digital tickets
+### 10) Government
+Govt. correspondence, taxes, documents, etc.
+### 11) Healthcare
+doctor's appointments and records
+### 12) Home/Insurance
+Home insurance
+### 13) Home/Condo
+Condo management
+### 14) Investments
+Investment records
+### 15) Job search
+job applications
+### 16) Newsletters & Promos
+General marketing, promos, product emails.
+### 16) Phone & Wifi
+Phone and home wifi subscriptions
+### 18) Security & Verification/Account activity
+Modifications made to accounts (including account creations) + security alerts +
+account closed
+### 18) Security & Verification/Action Required
+Modifications made to accounts (including account creations) + security alerts +
+account closed
+## 19) Security & Verification/Codes & links
+OTP + verification links + reset links
+## 22) Shopping
+Online/in-person shopping receipts + delivery updates + reviews
+## 22) Support & Feedback
+Online/in-person shopping receipts + delivery updates + reviews
+### 20) Transactions/Bills due
+Bills and payments due + payment failure/cancellation
+## 21) Transactions/Receipts
+Payment receipts/confirmations + subscriptions (does not include shopping receipts)
+## 23) Work
+work-related emails
+
+### TODO: Check no rental appointments in apt search 

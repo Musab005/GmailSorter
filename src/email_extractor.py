@@ -14,6 +14,15 @@ def is_labelled(results):
     return False
 
 
+def is_unlabelled(results):
+    labels = results.get('labelIds')
+    if not labels:
+        return True
+    else:
+        return False
+
+
+
 def extract_message(results, data):
     # data = {
     #     "id": [],
