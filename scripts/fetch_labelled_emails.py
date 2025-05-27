@@ -1,6 +1,5 @@
-import base64
-import json
 import os.path
+import time
 
 import pandas as pd
 from google.auth.transport.requests import Request
@@ -8,7 +7,8 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-from src.email_extractor import extract_message, is_labelled
+from src.email_extractor import extract_message
+from src.label_verifier import is_labelled
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://mail.google.com/", "https://www.googleapis.com/auth/gmail.labels",
@@ -91,7 +91,7 @@ def main():
             "subject": [],
             "text": []
         }
-
+        start_time = time.time()
         count = 0
         for i in range(len(ids)):
             try:
@@ -104,10 +104,9 @@ def main():
                 if results:
                     if is_labelled(results):
                         extract_message(results, data)
-                        print("count: ", i)
                         count += 1
-                        if count == 1000:
-                            break
+                        if count % 100 == 0:
+                            print("count: ", count)
                 else:
                     print("something went wrong")
 
@@ -116,6 +115,9 @@ def main():
                 print(f"An error occurred: {error}")
 
         # for loop ends
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        print(f"Elapsed time: {elapsed_time:.4f} seconds")
         print(len(data['id']))
         print(len(data['subject']))
         print(len(data['label']))

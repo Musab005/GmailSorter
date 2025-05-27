@@ -6,30 +6,13 @@ from bs4 import BeautifulSoup
 from src.global_store import get_value
 
 
-def is_labelled(results):
-    labels = results.get('labelIds')
-    for label in labels:
-        if label.startswith("Label"):
-            return True
-    return False
-
-
-def is_unlabelled(results):
-    labels = results.get('labelIds')
-    if not labels:
-        return True
-    else:
-        return False
-
-
-
 def extract_message(results, data):
     # data = {
     #     "id": [],
     #     "label": [],
     #     "subject": [],
     #     "text": []
-    # }
+    # }`
 
     # extract id
     email_id = results.get('id')
@@ -41,24 +24,28 @@ def extract_message(results, data):
     for label in labels:
         if label.startswith("Label"):
             data['label'].append(get_value(label))
-            # print("label id: ", label, "label name: ", get_value(label))
-            # data['label'].append(label)
             appended = True
     if not appended:
-        data['label'].append("Dummy text")
+        data['label'].append("Dummy label")
 
     # extract subject
     payload = results.get("payload")
     headers_list = payload.get("headers")
+    appended = False
     for entry in headers_list:
         if entry.get("name") == "Subject":
-            data['subject'].append(entry.get("value"))
-    if not data['subject']:
-        data['subject'].append("Dummy text")
+            data['subject'].append(entry.get("value", 'Dummy subject'))
+            appended = True
+            break
+    if not appended:
+        data['subject'].append("Dummy subject")
 
     # extract text
     text = get_text(payload)
     data['text'].append(text)
+
+    if not len(data['text']) == len(data['subject']) == len(data['label']) == len(data['id']):
+        print("Error id: ", email_id)
 
     return
 
