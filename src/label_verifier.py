@@ -1,4 +1,3 @@
-
 def is_labelled(results):
     labels = results.get('labelIds')
     for label in labels:

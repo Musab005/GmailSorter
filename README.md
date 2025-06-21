@@ -1,3 +1,7 @@
+# Environment.yaml
+In addition to running `conda env create -f environment.yaml`
+do: `pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128`
+
 # Motivation
 1) Wanted to develop a machine learning model for a practical use case.
 2) Wanted to work with Google Cloud
