@@ -7,13 +7,19 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 # If modifying these scopes, delete the file token.json.
-SCOPES = ["https://mail.google.com/", "https://www.googleapis.com/auth/gmail.labels", "https://www.googleapis.com/auth/gmail.modify"]
+SCOPES = ["https://mail.google.com/", "https://www.googleapis.com/auth/gmail.labels",
+          "https://www.googleapis.com/auth/gmail.modify"]
 
 
 def main():
     """Shows basic usage of the Gmail API.
   Lists the user's Gmail labels.
   """
+
+    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    token_path = os.path.join(base_dir, 'credentials', 'token.json')
+    secrets_path = os.path.join(base_dir, 'credentials', 'client_secrets.json')
+
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
@@ -25,38 +31,22 @@ def main():
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                "../credentials/client_secrets.json", SCOPES
-            )
+            flow = InstalledAppFlow.from_client_secrets_file(secrets_path, SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
-        with open("../credentials/token.json", "w") as token:
+        with open(token_path, "w") as token:
             token.write(creds.to_json())
 
     try:
-        query_email = "from:FidoBill@fidomobile.ca"
-        al_meezan_id = "Label_1171309637714112730"
-        meezan_id = "Label_7249719907569470582"
-        scotiabank_id = "Label_8900035065918535414"
-        wealthsimple_id = "Label_8393498597313348571"
-        reciepts_id = "Label_5039532840471697976"
-        phone_id = "Label_8973070974094460398"
-        communauto_id = "Label_8457010568994296209"
-        credit_id = "Label_1667435912147980212"
-        rbc_id = "Label_3358910350676290351"
-        offers_id = "Label_426101741412861469"
-        wise_id = "Label_4925215570237948792"
-        security_id = "Label_5151399784548708030"
-        bills_id = "Label_3898552857053985684"
-        action_req_id = "Label_7412877949105455075"
-
+        old_WS = "Label_8393498597313348571"
+        new_WS = "Label_6466171963081574403"
 
         # Call the Gmail API
         service = build("gmail", "v1", credentials=creds)
         results = service.users().messages().list(
             userId="me",
             maxResults=500,
-            q=query_email,
+            labelIds=[old_WS],
             includeSpamTrash="false"
         ).execute()
 
@@ -78,7 +68,7 @@ def main():
                 userId="me",
                 maxResults=500,
                 pageToken=next_page_token,
-                q=query_email,
+                labelIds=[old_WS],
                 includeSpamTrash="false"
             ).execute()
 
@@ -100,10 +90,10 @@ def main():
             results = service.users().messages().batchModify(
                 userId="me",
                 body={
-                      "ids": ids,
-                      "addLabelIds": bills_id,
-                      "removeLabelIds": [action_req_id, "INBOX", phone_id]
-                    }
+                    "ids": ids,
+                    "addLabelIds": new_WS,
+                    "removeLabelIds": [old_WS]
+                }
             ).execute()
             # results = empty if successful
 

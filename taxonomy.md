@@ -1,50 +1,59 @@
-### 1) Admissions
-School admissions, inquiries
-### 2) Appointments
-Appointment confirmations, cancellations
-### 3) apt search
-Apartment hunting
-### 4) Bank Account
-Bank emails
-### 5) Bookings/Flights
-flight tickets, promos, loyalty accounts
-### 6) Bookings/Hotels
-hotel bookings, loyalty accounts
-### 7) Bookings/Transport
-Car, train, rideshare bookings
-### 8) Bookings/Communauto
-Communauto bookings
-### 9) Events and Tickets
-Entertainment, event registration, digital tickets
-### 10) Government
+### 1) A-Levels - DONE
+old emails from A-Level colleges
+### 2) apt search - DONE
+Apartment hunting, leads, inquiries, appointments
+### 3) Banking & Investments/subfolders - DONE
+one subfolder for each financial product
+### 4) Bookings/
+#### Communauto
+Trip bookings, promos, newsletters, bills
+#### Flights
+flight tickets, promos, newsletters, loyalty accounts, refunds, customer support
+#### Hotels
+hotel bookings, airbnb, loyalty accounts, reviews, customer support
+#### Transport
+Other transport bookings (rental cars, train, rideshare), reviews, inquiries, refunds
+### 5) Events & Tickets
+Entertainment events, digital tickets
+### 6) Government
 Govt. correspondence, taxes, documents, etc.
-### 11) Healthcare
-doctor's appointments and records
-### 12) Home/Insurance
-Home insurance
-### 13) Home/Condo
-Condo management
-### 14) Investments
-Investment records
-### 15) Job search
-job applications
-### 16) Newsletters & Promos
-General marketing, promos, product emails.
-### 17) Phone & Wifi
-Phone and home wifi subscriptions
-### 18) Security & Verification/Account activity
-Account creations and modifications
-### 19) Security & Verification/Action Required
-Urgent security issues
-## 20) Security & Verification/Codes & links
+### 7) Healthcare
+doctor's appointments, receipts, records
+### 8) Home/
+#### Insurance
+Home insurance, promos, newsletters
+#### Condo
+Condo management, lease agreements, landlord communication
+#### Wifi
+bills, account activity, promos, newsletters
+#### Hydro
+bills, account activity, newsletters
+### 9) Job search/
+#### Applied
+job applications applied
+#### Leads
+Leads, referrals, invited to apply
+#### Next steps
+Invited to move forward from the initial application
+#### Rejected
+Rejections
+### 10) Newsletters & Promos
+All other marketing, promos, product emails.
+### 11) Payments & Subscriptions/
+### Action Required
+payment failures
+#### Confirmations
+Receipts for subscriptions and any other payments made not in shopping
+### 12) Security & Verification/
+#### Account activity
+All account creations, modifications, logins
+#### Action Required
+Urgent online/account security issues
+#### Codes & links
 OTP, verification links, reset links
-## 21) Shopping
-Online/in-person shopping receipts, delivery updates, return/refunds
-## 22) Support & Feedback
-Customer support, reviews, surveys
-### 23) Transactions/Bills due
-Bills and payments due, payment failures, payment cancellations
-## 24) Transactions/Receipts
-Payment receipts/confirmations, subscriptions
-## 25) Work
-work-related emails
+### 13) Shopping
+Online/in-person shopping receipts, delivery updates, return/refunds, amazon shopping
+### 22) Support & Feedback
+reviews, surveys, customer support, general leads that don't fit into any other specific label
+### 25) Work/subfolders
+One subfolder for each type of work I am involved in
