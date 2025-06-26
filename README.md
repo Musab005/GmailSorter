@@ -1,3 +1,6 @@
+# TODO: 
+How to handle multiple labels? Do such emails exist in my dataset?
+
 # Environment.yaml
 In addition to running `conda env create -f environment.yaml`
 do: `pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128`

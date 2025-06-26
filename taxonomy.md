@@ -4,56 +4,58 @@ old emails from A-Level colleges
 Apartment hunting, leads, inquiries, appointments
 ### 3) Banking & Investments/subfolders - DONE
 one subfolder for each financial product
-### 4) Bookings/
+### 4) Bookings/ - DONE
 #### Communauto
-Trip bookings, promos, newsletters, bills
+Trip bookings, newsletters, bills
 #### Flights
-flight tickets, promos, newsletters, loyalty accounts, refunds, customer support
+flight tickets, promos, newsletters, loyalty accounts, customer support
 #### Hotels
-hotel bookings, airbnb, loyalty accounts, reviews, customer support
+hotel bookings, receipts, airbnb, reviews, customer support
 #### Transport
-Other transport bookings (rental cars, train, rideshare), reviews, inquiries, refunds
-### 5) Events & Tickets
-Entertainment events, digital tickets
-### 6) Government
+Other transport bookings (rental cars, train, rideshare), reviews, inquiries, receipts
+### 5) Events & Tickets - DONE
+Entertainment events, digital tickets, invites, feedbacks
+### 6) Government - DONE
 Govt. correspondence, taxes, documents, etc.
-### 7) Healthcare
-doctor's appointments, receipts, records
-### 8) Home/
+### 7) Healthcare - DONE
+doctor's appointments, receipts, records, communication
+### 8) Home/ - DONE
+#### Phone
+contract, bills, receipts, newsletters
+#### Wifi
+contract, promos, newsletters
+#### Hydro
+contract, bills, newsletters
 #### Insurance
-Home insurance, promos, newsletters
+contract, newsletters
 #### Condo
 Condo management, lease agreements, landlord communication
-#### Wifi
-bills, account activity, promos, newsletters
-#### Hydro
-bills, account activity, newsletters
-### 9) Job search/
+### 9) Job search/ - DONE
 #### Applied
-job applications applied
+application confirmations
 #### Leads
-Leads, referrals, invited to apply
+job advertisements, job alerts, networking, invited to apply, feedback/surveys, linkedin dms
 #### Next steps
-Invited to move forward from the initial application
+online assessments, interviews, offers
 #### Rejected
-Rejections
-### 10) Newsletters & Promos
-All other marketing, promos, product emails.
-### 11) Payments & Subscriptions/
+Rejections, position filled/closed
+### 10) McGill - DONE
+Newsletters, events
+### 11) Newsletters & Promos - TODO
+marketing, promos, product emails (exclude those that are directly referenced in another label)
+### 12) Payments & Subscriptions/ - TODO
 ### Action Required
-payment failures
+payment declined, complete a payment (payment instructions)
 #### Confirmations
-Receipts for subscriptions and any other payments made not in shopping
-### 12) Security & Verification/
+Receipts, payment/subscription confirmations, refunds, cancellations
+### 13) Security & Verification/ - TODO
 #### Account activity
 All account creations, modifications, logins
 #### Action Required
 Urgent online/account security issues
 #### Codes & links
 OTP, verification links, reset links
-### 13) Shopping
-Online/in-person shopping receipts, delivery updates, return/refunds, amazon shopping
-### 22) Support & Feedback
-reviews, surveys, customer support, general leads that don't fit into any other specific label
-### 25) Work/subfolders
+### 14) Shopping - TODO
+Online/in-person shopping receipts, delivery updates, return/refunds, amazon shopping, rewards/promos ?
+### 16) Work/subfolders
 One subfolder for each type of work I am involved in
