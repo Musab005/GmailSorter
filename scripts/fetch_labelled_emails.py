@@ -105,7 +105,7 @@ def main():
                     if is_labelled(results):
                         extract_message(results, data)
                         count += 1
-                        if count % 100 == 0:
+                        if count % 500 == 0:
                             print("count: ", count)
                 else:
                     print("something went wrong")

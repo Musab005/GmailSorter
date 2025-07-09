@@ -3,7 +3,7 @@ import re
 
 import unicodedata
 from bs4 import BeautifulSoup
-from src.global_store import get_value
+from src.global_store import get_label_name
 
 
 def extract_message(results, data):
@@ -23,7 +23,7 @@ def extract_message(results, data):
     appended = False
     for label in labels:
         if label.startswith("Label"):
-            data['label'].append(get_value(label))
+            data['label'].append(get_label_name(label))
             appended = True
     if not appended:
         data['label'].append("Dummy label")

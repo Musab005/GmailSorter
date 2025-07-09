@@ -1,0 +1,24 @@
+# ~/gmail-sorter-code/environment.yml
+name: gmail_sorter
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11  # Using a recent, stable Python version
+  - pip
+  - pytorch
+  - torchvision
+  - torchaudio
+  - pytorch-cuda=12.1 # This is key - it installs the correct CUDA toolkit for PyTorch
+  - transformers
+  - datasets
+  - pandas
+  - scikit-learn
+  - matplotlib
+  - seaborn
+  - ipykernel     # To use this environment in Jupyter
+  - ipywidgets    # For notebook progress bars
+  - tqdm
+  - wandb         # Your trainer is configured to report to wandb

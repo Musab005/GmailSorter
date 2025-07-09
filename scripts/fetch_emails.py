@@ -1,5 +1,3 @@
-import base64
-import json
 import os.path
 
 import pandas as pd
@@ -41,7 +39,6 @@ def main():
             token_file.write(creds.to_json())
 
     try:
-
         # Call the Gmail API users.messages.list
         service = build("gmail", "v1", credentials=creds)
         results = service.users().messages().list(
@@ -108,7 +105,7 @@ def main():
             "text": []
         }
 
-        for i in range(min(100, len(ids))):
+        for i in range(len(ids)):
             try:
                 # Call the Gmail API users.messages.get
                 results = service.users().messages().get(

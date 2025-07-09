@@ -42,7 +42,6 @@ def main():
             token_file.write(creds.to_json())
 
     try:
-
         # Call the Gmail API users.messages.list
         service = build("gmail", "v1", credentials=creds)
         results = service.users().messages().list(

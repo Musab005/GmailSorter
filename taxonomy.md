@@ -1,10 +1,10 @@
-### 1) A-Levels - DONE
+### 1) A-Levels
 old emails from A-Level colleges
-### 2) apt search - DONE
+### 2) apt search
 Apartment hunting, leads, inquiries, appointments
-### 3) Banking & Investments/subfolders - DONE
+### 3) Banking & Investments/subfolders
 one subfolder for each financial product
-### 4) Bookings/ - DONE
+### 4) Bookings/
 #### Communauto
 Trip bookings, newsletters, bills
 #### Flights
@@ -13,13 +13,24 @@ flight tickets, promos, newsletters, loyalty accounts, customer support
 hotel bookings, receipts, airbnb, reviews, customer support
 #### Transport
 Other transport bookings (rental cars, train, rideshare), reviews, inquiries, receipts
-### 5) Events & Tickets - DONE
+### 5) Events & Tickets
 Entertainment events, digital tickets, invites, feedbacks
-### 6) Government - DONE
+### 6) Food & Shopping
+#### Cancellations/Refunds
+Cancellations, refunds issued
+#### Delivery Updates
+Delivery updates, failed deliveries, shipping updates
+#### Loyalty & Discounts
+loyalty accounts, product promos, discounts
+#### Receipts
+purchases
+#### Support
+Reviews, customer support
+### 7) Government
 Govt. correspondence, taxes, documents, etc.
-### 7) Healthcare - DONE
+### 8) Healthcare
 doctor's appointments, receipts, records, communication
-### 8) Home/ - DONE
+### 9) Home/
 #### Phone
 contract, bills, receipts, newsletters
 #### Wifi
@@ -30,7 +41,7 @@ contract, bills, newsletters
 contract, newsletters
 #### Condo
 Condo management, lease agreements, landlord communication
-### 9) Job search/ - DONE
+### 10) Job search/
 #### Applied
 application confirmations
 #### Leads
@@ -39,23 +50,23 @@ job advertisements, job alerts, networking, invited to apply, feedback/surveys, 
 online assessments, interviews, offers
 #### Rejected
 Rejections, position filled/closed
-### 10) McGill - DONE
-Newsletters, events
-### 11) Newsletters & Promos - TODO
-marketing, promos, product emails (exclude those that are directly referenced in another label)
-### 12) Payments & Subscriptions/ - TODO
+### 11) McGill
+Newsletters, events, information
+### 12) Newsletters
+General marketing emails (don't directly fit into another label)
+### 13) Payments & Subscriptions
 ### Action Required
 payment declined, complete a payment (payment instructions)
+#### Cancellations & Refunds
+refunds, subscription cancellations
 #### Confirmations
-Receipts, payment/subscription confirmations, refunds, cancellations
-### 13) Security & Verification/ - TODO
-#### Account activity
-All account creations, modifications, logins
+Receipts, payment/subscription confirmations
+### 14) Security & Verification
+#### Account Activity
+Login/device alerts, account creation & modification, updated terms & conditions
 #### Action Required
-Urgent online/account security issues
-#### Codes & links
+Account locked, unauthorized access, data breach, account deletion
+#### Codes & Links
 OTP, verification links, reset links
-### 14) Shopping - TODO
-Online/in-person shopping receipts, delivery updates, return/refunds, amazon shopping, rewards/promos ?
-### 16) Work/subfolders
+### 15) Work/subfolders 
 One subfolder for each type of work I am involved in

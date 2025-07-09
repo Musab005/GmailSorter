@@ -8,7 +8,7 @@ def is_labelled(results):
 
 def is_unlabelled(results):
     labels = results.get('labelIds')
-    if not labels:
-        return True
-    else:
-        return False
+    for label in labels:
+        if label.startswith("Label") or label == "INBOX":
+            return False
+    return True
