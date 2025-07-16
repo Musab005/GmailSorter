@@ -67,8 +67,8 @@ test_results = trainer.evaluate(eval_dataset=loaded_datasets["test"])
 for k, v in test_results.items():
     logger.info(f"{k}: {v:.4f}")
 
-# Save best model
-logger.info(f"Saving model to {model_output_path}...")
+# Save best BERT_model
+logger.info(f"Saving BERT_model to {model_output_path}...")
 trainer.save_model(model_output_path)
 tokenizer.save_pretrained(model_output_path)
 logger.info("Model and tokenizer saved.")

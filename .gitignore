@@ -2,6 +2,7 @@
 /credentials
 /src/global_store.py
 /data
-/model/prototype
+/BERT_model
 taxonomy.md
 /.venv
+BERT_model
