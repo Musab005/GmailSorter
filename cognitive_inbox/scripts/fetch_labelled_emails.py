@@ -1,12 +1,14 @@
 import os.path
-#TODO: instead of checking for "not labels" check if no custom labels applied and no INBOX label
+import time
+
 import pandas as pd
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-from src.label_verifier import is_unlabelled
+from cognitive_inbox.src.email_extractor import extract_message
+from cognitive_inbox.src.label_verifier import is_labelled
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://mail.google.com/", "https://www.googleapis.com/auth/gmail.labels",
@@ -17,7 +19,7 @@ def main():
     # Get absolute paths
     scripts_dir = os.path.dirname(os.path.abspath(__file__))
     root_dir = os.path.dirname(scripts_dir)
-    data_dir = os.path.join(root_dir, "data")
+    extracted_emails_path = os.path.join(root_dir, "data/extracted_emails.csv")
     token_path = os.path.join(root_dir, 'credentials', 'token.json')
     secrets_path = os.path.join(root_dir, 'credentials', 'client_secrets.json')
 
@@ -29,12 +31,9 @@ def main():
 
     # If credentials are missing or invalid
     if not creds or not creds.valid:
-        print("creds missing or invalid")
         if creds and creds.expired and creds.refresh_token:
-            print("requesting refresh token")
             creds.refresh(Request())
         else:
-            print("starting new auth flow")
             flow = InstalledAppFlow.from_client_secrets_file(secrets_path, SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the new token
@@ -42,6 +41,7 @@ def main():
             token_file.write(creds.to_json())
 
     try:
+
         # Call the Gmail API users.messages.list
         service = build("gmail", "v1", credentials=creds)
         results = service.users().messages().list(
@@ -85,8 +85,14 @@ def main():
         # all ids retrieved at this point
         print("number of emails retrieved: ", len(ids))
 
-        unlabelled_ids = []
-
+        data = {
+            "id": [],
+            "label": [],
+            "subject": [],
+            "text": []
+        }
+        start_time = time.time()
+        count = 0
         for i in range(len(ids)):
             try:
                 # Call the Gmail API users.messages.get
@@ -96,8 +102,11 @@ def main():
                 ).execute()
 
                 if results:
-                    if is_unlabelled(results):
-                        unlabelled_ids.append(results.get("id"))
+                    if is_labelled(results):
+                        extract_message(results, data)
+                        count += 1
+                        if count % 500 == 0:
+                            print("count: ", count)
                 else:
                     print("something went wrong")
 
@@ -105,10 +114,16 @@ def main():
                 # TODO(developer) - Handle errors from gmail API.
                 print(f"An error occurred: {error}")
 
-        # for loop ends here
-        with open(f"{data_dir}/unlabelled_ids.txt", "w") as f:
-            for idnum in unlabelled_ids:
-                f.write(idnum + "\n")
+        # for loop ends
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        print(f"Elapsed time: {elapsed_time:.4f} seconds")
+        print(len(data['id']))
+        print(len(data['subject']))
+        print(len(data['label']))
+        print(len(data['text']))
+        df = pd.DataFrame(data)
+        df.to_csv(extracted_emails_path, index=False, encoding="utf-8")
 
     except HttpError as error:
         # TODO(developer) - Handle errors from gmail API.

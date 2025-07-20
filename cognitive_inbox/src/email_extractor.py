@@ -3,7 +3,7 @@ import re
 
 import unicodedata
 from bs4 import BeautifulSoup
-from src.global_store import get_label_name
+from cognitive_inbox.src.global_store import get_label_name
 
 
 def extract_message(results, data):

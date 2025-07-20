@@ -4,7 +4,7 @@ from transformers import Trainer, TrainingArguments, EarlyStoppingCallback, Auto
     AutoTokenizer
 from sklearn.metrics import accuracy_score
 from datasets import load_from_disk
-from src.logger import get_logger
+from cognitive_inbox.src.logger import get_logger
 
 logger = get_logger("fine_tune")
 

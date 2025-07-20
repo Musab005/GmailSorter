@@ -1,11 +1,12 @@
 import os.path
 
+import pandas as pd
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-from src.global_store import get_category_labels
+from cognitive_inbox.src.email_extractor import extract_message
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://mail.google.com/", "https://www.googleapis.com/auth/gmail.labels",
@@ -38,13 +39,29 @@ def main():
             token_file.write(creds.to_json())
 
     try:
-
-        # Call the Gmail API
+        # Call the Gmail API users.messages.list
         service = build("gmail", "v1", credentials=creds)
         results = service.users().messages().list(
             userId="me",
-            includeSpamTrash="false"
+            maxResults=500,
+            includeSpamTrash=False
         ).execute()
+        # if successful:
+        # results = {
+        #   "messages": [
+        #     {
+        #       object (Message)
+        #     }
+        #   ],
+        #   "nextPageToken": string,
+        #   "resultSizeEstimate": integer
+        # }
+
+        # where Message = {
+        #   "id": string,
+        #   "threadId": string
+        # }
+        #
 
         # list of message objects
         messages = results.get("messages", [])
@@ -62,11 +79,11 @@ def main():
             service = build("gmail", "v1", credentials=creds)
             results = service.users().messages().list(
                 userId="me",
+                maxResults=500,
                 pageToken=next_page_token,
-                includeSpamTrash="false"
+                includeSpamTrash=False
             ).execute()
 
-            # list of message objects
             messages = results.get("messages", [])
 
             if not messages:
@@ -78,32 +95,41 @@ def main():
 
             next_page_token = results.get("nextPageToken", 0)
 
-        print("Total ids retrieved: ", len(ids))
+        # all ids retrieved at this point
+        print("number of emails retrieved: ", len(ids))
 
-        for i in range(0, len(ids), 1000):
-            curr_ids = ids[i:i + 1000]
-            print("Running batch: ", i)
+        data = {
+            "id": [],
+            "label": [],
+            "subject": [],
+            "text": []
+        }
+
+        for i in range(len(ids)):
             try:
-                results = service.users().messages().batchModify(
+                # Call the Gmail API users.messages.get
+                results = service.users().messages().get(
                     userId="me",
-                    body={
-                        "ids": curr_ids,
-                        "removeLabelIds": get_category_labels()
-                    }
+                    id=ids[i],
                 ).execute()
-                # results = empty if successful
 
-                if not results:
-                    print("Successfully changed labels")
+                if results:
+                    extract_message(results, data)
+                    print("count: ", i)
                 else:
-                    print("error: " + results)
+                    print("something went wrong")
 
             except HttpError as error:
                 # TODO(developer) - Handle errors from gmail API.
                 print(f"An error occurred: {error}")
 
-
-
+        # for loop ends
+        print(len(data['id']))
+        print(len(data['subject']))
+        print(len(data['label']))
+        print(len(data['text']))
+        df = pd.DataFrame(data)
+        df.to_csv(extracted_emails_path, index=False, encoding="utf-8")
 
     except HttpError as error:
         # TODO(developer) - Handle errors from gmail API.

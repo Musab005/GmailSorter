@@ -1,6 +1,6 @@
 .env
 /credentials
-/src/global_store.py
+/cognitive_inbox/src/global_store.py
 /data
 /BERT_model
 taxonomy.md

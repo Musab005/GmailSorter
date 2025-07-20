@@ -3,7 +3,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from datasets import Dataset, DatasetDict, ClassLabel
 from transformers import AutoTokenizer
-from src.logger import get_logger
+from cognitive_inbox.src.logger import get_logger
 
 logger = get_logger("prepare_data")
 

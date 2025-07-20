@@ -1,4 +1,4 @@
-from src.global_store import get_custom_labels, get_label_id
+from cognitive_inbox.src.global_store import get_custom_labels, get_label_id
 import os
 
 
