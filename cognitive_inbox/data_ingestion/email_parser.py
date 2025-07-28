@@ -2,7 +2,7 @@
 
 import os
 import dateparser
-
+import time
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -132,16 +132,18 @@ def parse_email(service, label_map, message_id, user_id='me'):
             elif header['name'].lower() == 'date':
                 msg_date = dateparser.parse(header['value'])
 
-        # extract text
-        body_text = get_text(payload)
+        # extract body text
+        body = get_text(payload)
+
+        date_timestamp = int(time.mktime(msg_date.timetuple())) if msg_date else None
 
         return {
-            'id': safe_str(message['id']),
-            'subject': safe_str(subject.strip()),
-            'from': safe_str(from_sender.strip()),
-            'date': msg_date.strftime('%Y-%m-%d %H:%M:%S') if msg_date else "N/A",
-            'labels': safe_str(", ".join(label_names)),  # Store as a comma-separated string for metadata
-            'body': safe_str(body_text.strip())
+            'id': message['id'],
+            'subject': subject.strip(),
+            'from': from_sender.strip(),
+            'date': date_timestamp,
+            'labels': ", ".join(label_names),
+            'body': body.strip()
         }
     except HttpError as error:
         print(f'An error occurred while parsing email {message_id}: {error}')

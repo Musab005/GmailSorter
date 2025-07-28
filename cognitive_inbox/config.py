@@ -16,13 +16,15 @@ else:
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # --- File and Directory Paths ---
-EMBEDDING_MODEL_PATH = os.getenv("EMBEDDING_MODEL_PATH", "BERT_model/")
+EMBEDDING_MODEL_PATH = os.getenv("EMBEDDING_MODEL_PATH")
 
-CHROMA_DB_PATH = os.getenv("CHROMA_DB_PATH", "chroma_db_persistent")
+CHROMA_DB_PATH = os.getenv("CHROMA_DB_PATH")
 
-GOOGLE_CREDENTIALS_PATH = os.getenv("CREDENTIALS_PATH", "credentials/credentials.json")
+CHROMA_COLLECTION = "gmail_embeddings"
 
-GOOGLE_TOKEN_PATH = os.getenv("TOKEN_PATH", "credentials/token.json")
+GOOGLE_CREDENTIALS_PATH = os.getenv("CREDENTIALS_PATH")
+
+GOOGLE_TOKEN_PATH = os.getenv("TOKEN_PATH")
 
 # --- Validation ---
 if not OPENAI_API_KEY:

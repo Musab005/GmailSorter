@@ -28,8 +28,8 @@ def run_bulk_ingestion():
     if not label_map:
         print("Could not fetch label map. Labels will not be ingested.")
 
-    print("Loading custom embedding model... (This may take a moment)")
-    # THIS IS THE EMBEDDER WE MUST USE
+    print("Loading custom embedding model...")
+
     embedder = custom_bert_embedder.CustomBertEmbedder(
         model_path=config.EMBEDDING_MODEL_PATH
     )
@@ -71,20 +71,23 @@ def run_bulk_ingestion():
             )
 
             if parsed_email and parsed_email['body']:
+
+                clean_metadata = {
+                    "source_email_id": parsed_email.get('id', 'unknown_id'),
+                    "subject": parsed_email.get('subject') or "",
+                    "from": parsed_email.get('from') or "",
+                    "date": parsed_email.get('date') or 0.0,  # Replace None with 0.0 for float
+                    "labels": parsed_email.get('labels') or ""
+                }
+
                 chunks = text_splitter.split_text(parsed_email['body'])
 
                 for j, chunk in enumerate(chunks):
                     documents_to_add.append(chunk)
 
-                    metadatas_to_add.append({
-                        "source_email_id": parsed_email['id'],
-                        "subject": parsed_email['subject'],
-                        "from": parsed_email['from'],
-                        "date": parsed_email['date'],
-                        "labels": parsed_email['labels']
-                    })
+                    metadatas_to_add.append(clean_metadata)
 
-                    ids_to_add.append(f"{parsed_email['id']}_{j}")
+                    ids_to_add.append(f"{clean_metadata['source_email_id']}_{j}")
 
         if documents_to_add:
             print(f"Generating embeddings for {len(documents_to_add)} chunks...")
@@ -102,7 +105,7 @@ def run_bulk_ingestion():
 
         time.sleep(1)
 
-    # --- 4. Final Verification ---
+    # --- 4. Verification ---
     print("\n[Step 4/5] Verifying ingestion...")
     count = chroma_collection.count()
     print(f"Verification complete. The database now contains {count} document chunks.")

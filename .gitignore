@@ -6,3 +6,4 @@
 taxonomy.md
 /.venv
 BERT_model
+/chroma_db
