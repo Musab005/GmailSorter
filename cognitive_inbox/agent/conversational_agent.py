@@ -7,11 +7,11 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain.retrievers.self_query.base import SelfQueryRetriever
 from langchain.chains.query_constructor.base import AttributeInfo
 from langchain_chroma import Chroma
+import datetime
 
 from cognitive_inbox import config
 from cognitive_inbox.embeddings import custom_bert_embedder
 
-# --- 1. Define the Metadata Structure for the Self-Query Retriever ---
 metadata_field_info = [
     AttributeInfo(
         name="subject",
@@ -45,15 +45,33 @@ metadata_field_info = [
 def _format_docs(docs):
     """
     Helper function to format the retrieved documents into a single string for the prompt.
+    This version converts Unix timestamps in the metadata back to human-readable dates.
     """
-    return "\n\n".join(
-        f"Email from: {doc.metadata.get('from')}\n"
-        f"Date: {doc.metadata.get('date')}\n"
-        f"Subject: {doc.metadata.get('subject')}\n"
-        f"Labels: {doc.metadata.get('labels')}\n\n"
-        f"{doc.page_content}"
-        for doc in docs
-    )
+    formatted_docs = []
+    for doc in docs:
+        timestamp = doc.metadata.get('date')
+        formatted_date = "Date not available"
+
+        if timestamp:
+            try:
+                # Convert the Unix timestamp (which can be int or float) to a datetime object
+                dt_object = datetime.datetime.fromtimestamp(float(timestamp))
+                # Format the datetime object into a user-friendly string
+                formatted_date = dt_object.strftime("%B %d, %Y")
+            except (ValueError, TypeError):
+                # This handles cases where the timestamp might be corrupted or not a number
+                formatted_date = "Invalid date format"
+
+        doc_string = (
+            f"Email from: {doc.metadata.get('from')}\n"
+            f"Date: {formatted_date}\n"
+            f"Subject: {doc.metadata.get('subject')}\n"
+            f"Labels: {doc.metadata.get('labels')}\n\n"
+            f"{doc.page_content}"
+        )
+        formatted_docs.append(doc_string)
+
+    return "\n\n".join(formatted_docs)
 
 
 def create_conversational_agent():
@@ -77,7 +95,6 @@ def create_conversational_agent():
     )
 
     # Create the Self-Query Retriever
-    # This is the "smart" retriever that can parse natural language for filters.
     document_content_description = "The body text of an email"
     retriever = SelfQueryRetriever.from_llm(
         llm,
@@ -88,7 +105,7 @@ def create_conversational_agent():
     )
     print("Self-Query Retriever created.")
 
-    # Design the Master Prompt (guides the LLM on how to use the retrieved context to answer the question)
+    # Master Prompt (guides the LLM on how to use the retrieved context to answer the question)
     prompt_template = """
 You are a highly intelligent and diligent personal email assistant. Your task is to answer the user's question based *only* on the context provided from their email inbox.
 
