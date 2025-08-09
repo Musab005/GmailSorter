@@ -3,10 +3,10 @@
 # import time
 # from langchain.text_splitter import RecursiveCharacterTextSplitter
 #
-# from cognitive_inbox.data_ingestion import email_parser
-# from cognitive_inbox.embeddings import custom_bert_embedder
-# from cognitive_inbox.vectorstore import chroma_manager
-# from cognitive_inbox import config
+# from app.data_ingestion import email_parser
+# from app.embeddings import custom_bert_embedder
+# from app.vectorstore import chroma_manager
+# from app import config
 # from google.colab import userdata
 #
 #

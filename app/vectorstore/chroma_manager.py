@@ -1,4 +1,4 @@
-# cognitive_inbox/vectorstore/chroma_manager.py
+# app/vectorstore/chroma_manager.py
 
 import chromadb
 from cognitive_inbox import config

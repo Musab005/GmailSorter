@@ -1,4 +1,4 @@
-# cognitive_inbox/data_ingestion/email_parser_colab.py
+# app/data_ingestion/email_parser_colab.py
 
 # import os
 # import dateparser
@@ -10,8 +10,8 @@
 # from googleapiclient.errors import HttpError
 # from google.colab import userdata
 #
-# from cognitive_inbox import config
-# from cognitive_inbox.src.email_extractor import get_text
+# from app import config
+# from app.src.email_extractor import get_text
 #
 # # If modifying these scopes, delete the file token.json.
 # SCOPES = ["https://mail.google.com/", "https://www.googleapis.com/auth/gmail.labels",

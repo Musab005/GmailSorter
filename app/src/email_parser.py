@@ -1,4 +1,4 @@
-# cognitive_inbox/data_ingestion/email_parser.py
+# app/data_ingestion/email_parser.py
 
 import os
 import dateparser

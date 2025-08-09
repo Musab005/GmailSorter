@@ -76,7 +76,8 @@ def run_bulk_ingestion():
                     "source_email_id": parsed_email.get('id', 'unknown_id'),
                     "subject": parsed_email.get('subject') or "",
                     "from": parsed_email.get('from') or "",
-                    "date": parsed_email.get('date') or 0.0,  # Replace None with 0.0 for float
+                    # FIX: Cast the timestamp to an integer to match the core's AttributeInfo
+                    "date": int(parsed_email.get('date') or 0),
                     "labels": parsed_email.get('labels') or ""
                 }
 
