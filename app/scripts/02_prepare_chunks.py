@@ -26,7 +26,9 @@ def create_chunks():
     chunks_mapping = {
         "chunk_id": [],
         "email_id": [],
-        "email_label": [],
+        "from": [],
+        "date": [],
+        # "email_label": [],
         "email_subject": [],
         "chunk_text": []
     }
@@ -44,7 +46,9 @@ def create_chunks():
         for chunk in chunks:
             chunks_mapping["chunk_id"].append(str(uuid.uuid4()))
             chunks_mapping["email_id"].append(row["id"])
-            chunks_mapping["email_label"].append(row["label"])
+            chunks_mapping["from"].append(row["from"])
+            chunks_mapping["date"].append(row["date"])
+            # chunks_mapping["email_label"].append(row["label"])
             chunks_mapping["email_subject"].append(row["subject"])
             chunks_mapping["chunk_text"].append(chunk)
 

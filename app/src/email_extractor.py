@@ -3,49 +3,88 @@ import re
 
 import unicodedata
 from bs4 import BeautifulSoup
-from cognitive_inbox.src.global_store import get_label_name
+from .global_store import get_label_name
+from datetime import datetime
 
 
-def extract_message(results, data):
+def extract_message(result, data):
     # data = {
     #     "id": [],
+    #     "from": [],
+    #     "date": [],
     #     "label": [],
     #     "subject": [],
     #     "text": []
-    # }`
+    # }
+
+    # see data/raw/sample-email.json for more detail
+    # result = {
+    #     "id": string,
+    #     "threadId": string,
+    #     "labelIds": [
+    #         string
+    #     ],
+    #     "snippet": string,
+    #     "historyId": string,
+    #     "internalDate": string,
+    #     "payload": {
+    #         object(MessagePart)
+    #     },
+    #     "sizeEstimate": integer,
+    #     "raw": string
+    # }
 
     # extract id
-    email_id = results.get('id')
+    email_id = result.get('id')
     data['id'].append(email_id)
 
-    # extract labels
-    labels = results.get('labelIds')
-    appended = False
-    for label in labels:
-        if label.startswith("Label"):
-            data['label'].append(get_label_name(label))
-            appended = True
-    if not appended:
-        data['label'].append("Dummy label")
+    # extract date
+    internal_date = result.get('internalDate')
+    formatted_date = datetime.fromtimestamp(int(internal_date) / 1000).strftime("%Y-%m-%d %H:%M:%S")
+    data['date'].append(formatted_date)
 
-    # extract subject
-    payload = results.get("payload")
+    # extract labels
+    # labels = result.get('labelIds')
+    # appended = False
+    # for label in labels:
+    #     if label.startswith("Label"):
+    #         data['label'].append(get_label_name(label))
+    #         appended = True
+    # if not appended:
+    #     data['label'].append("Dummy label")
+
+    # extract From, Subject
+    payload = result.get("payload")
     headers_list = payload.get("headers")
-    appended = False
+    appended_subject = False
+    appended_from = False
     for entry in headers_list:
-        if entry.get("name") == "Subject":
-            data['subject'].append(entry.get("value", 'Dummy subject'))
-            appended = True
-            break
-    if not appended:
-        data['subject'].append("Dummy subject")
+        if entry.get("name") == "From" and not appended_from:
+            data['from'].append(entry.get("value", 'Sender missing'))
+            appended_from = True
+
+        if entry.get("name") == "Subject" and not appended_subject:
+            data['subject'].append(entry.get("value", 'Subject missing'))
+            appended_subject = True
+
+    if not appended_subject:
+        data['subject'].append('Subject missing')
+    if not appended_from:
+        data['from'].append('Sender missing')
 
     # extract text
     text = get_text(payload)
     data['text'].append(text)
 
-    if not len(data['text']) == len(data['subject']) == len(data['label']) == len(data['id']):
+    if not (len(data['text']) == len(data['subject']) == len(data['id']) == len(data['date']) == len(data['from'])):
         print("Error id: ", email_id)
+        print(len(data['text']))
+        print(len(data['subject']))
+        # print(len(data['label']))
+        print(len(data['id']))
+        print(len(data['date']))
+        print(len(data['from']))
+        raise Exception
 
     return
 
