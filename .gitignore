@@ -7,3 +7,5 @@ taxonomy.md
 /.venv
 BERT_model
 /chroma_db
+/app/vectorstore/index.faiss
+/app/vectorstore/metadata.pkl
