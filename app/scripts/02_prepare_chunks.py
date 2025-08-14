@@ -39,7 +39,7 @@ def create_chunks():
 
         # Skip if text is missing or NaN
         if not isinstance(text, str) or pd.isna(text) or text.strip() == "":
-            print(f"Skipping text: {text} at row index: {index}")
+            print(f"Skipping text: {text} at email id: {row.get('id')}, subject: {row.get('subject')}")
             continue
 
         chunks = text_splitter.split_text(text)
