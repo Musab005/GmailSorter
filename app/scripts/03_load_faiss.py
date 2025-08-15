@@ -7,7 +7,6 @@ import pickle
 scripts_dir = os.path.dirname(__file__)
 app_dir = os.path.dirname(scripts_dir)
 vectorstore_dir = os.path.join(app_dir, 'vectorstore')
-os.makedirs(vectorstore_dir, exist_ok=True)
 
 FAISS_INDEX_PATH = os.path.join(vectorstore_dir, 'index.faiss')
 METADATA_PATH = os.path.join(vectorstore_dir, 'metadata.pkl')
