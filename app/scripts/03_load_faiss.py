@@ -1,45 +1,52 @@
+import os
 import faiss
 import numpy as np
 import pandas as pd
 import pickle
-import os
 
 scripts_dir = os.path.dirname(__file__)
 app_dir = os.path.dirname(scripts_dir)
-vectorstore_dir = app_dir + '/vectorstore'
-FAISS_INDEX_PATH = f'{vectorstore_dir}/index.faiss'
-METADATA_PATH = f'{vectorstore_dir}/metadata.pkl'
+vectorstore_dir = os.path.join(app_dir, 'vectorstore')
+os.makedirs(vectorstore_dir, exist_ok=True)
+
+FAISS_INDEX_PATH = os.path.join(vectorstore_dir, 'index.faiss')
+METADATA_PATH = os.path.join(vectorstore_dir, 'metadata.pkl')
+
 project_root_dir = os.path.dirname(app_dir)
-data_raw_dir = os.path.join(project_root_dir, 'data/raw')
-data_processed_dir = os.path.join(project_root_dir, 'data/processed')
+data_processed_dir = os.path.join(project_root_dir, 'data', 'processed')
+
 
 print("Loading data...")
-df_chunks = pd.read_csv(f'{data_processed_dir}/chunks.csv')
-embeddings = np.load(f'{data_processed_dir}/email_embeddings.npy')
+df_chunks = pd.read_csv(os.path.join(data_processed_dir, 'chunks.csv'))
+embeddings = np.load(os.path.join(data_processed_dir, 'email_embeddings.npy'))
 
-# Ensure the embeddings are in a C-contiguous array of type float32, which FAISS requires
 embeddings = np.ascontiguousarray(embeddings.astype('float32'))
 
 assert len(df_chunks) == len(embeddings), "Mismatch between chunks and embeddings count."
 print(f"Loaded {len(df_chunks)} chunks and embeddings.")
 
-print("Creating FAISS index...")
+# normalize for cosine similarity
+faiss.normalize_L2(embeddings)
 
+# create index (inner product)
 d = embeddings.shape[1]
+base_index = faiss.IndexFlatIP(d)
+index = faiss.IndexIDMap2(base_index)
 
-# brute-force L2 distance search.
-index = faiss.IndexFlatL2(d)
-index.add(embeddings)
+ids = np.arange(len(embeddings), dtype='int64')
+index.add_with_ids(embeddings, ids)
 
 print(f"Index created successfully. Total vectors in index: {index.ntotal}")
 
-# CREATE METADATA MAPPING
-# need to store the text and original source info separately, create a list of dictionaries where the index of the list
-# corresponds to the ID in the FAISS index.
-metadata = df_chunks[['chunk_text', 'email_id', 'email_subject']].to_dict('records')
+# metadata mapping
+required_columns = ['chunk_text', 'email_id', 'date', 'email_subject', 'from']
+for col in required_columns:
+    if col not in df_chunks.columns:
+        df_chunks[col] = None
+
+metadata = df_chunks[required_columns].to_dict('records')
 print("Metadata mapping created.")
 
-print("Saving FAISS index and metadata...")
 
 faiss.write_index(index, FAISS_INDEX_PATH)
 
@@ -48,6 +55,7 @@ with open(METADATA_PATH, 'wb') as f:
 
 print(f"Index saved to: {FAISS_INDEX_PATH}")
 print(f"Metadata saved to: {METADATA_PATH}")
+
 
 # print("\n--- Verification ---")
 # print("Loading index and metadata for a test query...")
