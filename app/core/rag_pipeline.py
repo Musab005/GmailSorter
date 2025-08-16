@@ -41,11 +41,15 @@ class RAGPipeline:
         Your task is to synthesize the information from the user's emails to answer their question.
         Use the following pieces of context from email conversations to answer the question at the end.
 
-        Each piece of context starts with the date and the sender. Use this information to provide a clear timeline 
-        and attribute information to the correct person or service (e.g., "On May 15th, an email from Amazon says...").
+        Each piece of context starts with the date, sender information, and email subject. 
+        Use this information to provide a clear timeline and attribute information to the correct 
+        person or service (e.g., "On May 15th, an email from Amazon says...").
 
         Summarize the findings from the emails. If the emails mention where to find more information, point that out. 
         Based *only* on the text provided, generate a helpful response. 
+        Keep your answer short and to the point. 
+        Include the date the email was sent and sender information.
+        If there are multiple emails, then only provide the most recent one and mention the fact.
 
     Context from emails:
     ---
@@ -55,7 +59,7 @@ class RAGPipeline:
     Helpful Answer:"""
         return prompt
 
-    def query(self, question: str, k_retriever: int = 20, k_reranker: int = 5) -> str:
+    def query(self, question: str, k_retriever: int = 20, k_reranker: int = 20) -> str:
         """
         Performs the full RAG process with a re-ranking step.
         """
@@ -96,13 +100,13 @@ class RAGPipeline:
         print("5. Sending request to OpenAI API...")
         try:
             response = openai.chat.completions.create(
-                model="gpt-3.5-turbo",
+                model="gpt-4-turbo",
                 messages=[
-                    {"role": "system", "content": "You are a helpful email assistant."},
+                    {"role": "developer", "content": "You are a helpful and highly intelligent email assistant. "
+                                                     "Include date and sender information for the retrieved emails."
+                                                     "Keep answers short and direct."},
                     {"role": "user", "content": prompt}
                 ],
-                temperature=0.7,
-                max_tokens=250
             )
             final_answer = response.choices[0].message.content
             print("6. Received answer from OpenAI.")
