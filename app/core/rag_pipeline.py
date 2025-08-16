@@ -1,170 +1,137 @@
-# app/core/rag_pipeline.py
-
-from langchain_openai import ChatOpenAI
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.output_parsers import StrOutputParser
-from langchain_core.runnables import RunnablePassthrough
-from langchain.retrievers.self_query.base import SelfQueryRetriever
-from langchain.chains.query_constructor.base import AttributeInfo
-from langchain_chroma import Chroma
-from langchain_core.runnables import RunnableLambda  # <-- Make sure this is imported
-import datetime
-
-from cognitive_inbox import config
-from cognitive_inbox.embeddings import custom_bert_embedder
-
-# FIX: Add more descriptive guidance for the LLM
-metadata_field_info = [
-    AttributeInfo(
-        name="subject",
-        description="The subject line of the email. Use a 'contains' operator for partial matches.",
-        type="string",
-    ),
-    AttributeInfo(
-        name="from",
-        description="The sender of the email (e.g., 'John Doe <john.doe@example.com>'). Use a 'contains' operator for this field when a user is asking about a sender.",
-        type="string",
-    ),
-    AttributeInfo(
-        name="date",
-        description=(
-            "The date the email was sent, represented as a Unix timestamp (integer). "
-            "Use this for queries about 'latest' or 'oldest' emails, or for filtering by a specific time period."
-        ),
-        type="integer",
-    ),
-    AttributeInfo(
-        name="labels",
-        description=(
-            "A comma-separated list of labels applied to the email. Use a 'contains' operator to check if a label exists."
-            "Example: 'Inbox, Important, Project-Updates, Invoices'"
-        ),
-        type="string",
-    ),
-]
+import faiss
+import pickle
+import os
+from sentence_transformers import SentenceTransformer, CrossEncoder
+import openai
+from .. import config
 
 
-def _format_docs(docs):
-    """
-    Helper function to format the retrieved documents into a single string for the prompt.
-    This version converts Unix timestamps in the metadata back to human-readable dates.
-    """
-    formatted_docs = []
-    for doc in docs:
-        timestamp = doc.metadata.get('date')
-        formatted_date = "Date not available"
+class RAGPipeline:
+    def __init__(self):
+        """
+        Initializes the RAG pipeline by loading all necessary components.
+        """
+        print("Initializing RAG Pipeline...")
 
-        if timestamp:
-            try:
-                # Convert the Unix timestamp (which can be int or float) to a datetime object
-                dt_object = datetime.datetime.fromtimestamp(float(timestamp))
-                # Format the datetime object into a user-friendly string
-                formatted_date = dt_object.strftime("%B %d, %Y")
-            except (ValueError, TypeError):
-                # This handles cases where the timestamp might be corrupted or not a number
-                formatted_date = "Invalid date format"
+        openai.api_key = config.OPENAI_API_KEY
 
-        doc_string = (
-            f"Email from: {doc.metadata.get('from')}\n"
-            f"Date: {formatted_date}\n"
-            f"Subject: {doc.metadata.get('subject')}\n"
-            f"Labels: {doc.metadata.get('labels')}\n\n"
-            f"{doc.page_content}"
-        )
-        formatted_docs.append(doc_string)
+        scripts_dir = os.path.dirname(__file__)
+        app_dir = os.path.dirname(scripts_dir)
+        vectorstore_dir = os.path.join(app_dir, 'vectorstore')
+        faiss_index_path = os.path.join(vectorstore_dir, 'index.faiss')
+        metadata_path = os.path.join(vectorstore_dir, 'metadata.pkl')
 
-    return "\n\n".join(formatted_docs)
+        print("Loading FAISS index and metadata...")
+        self.index = faiss.read_index(faiss_index_path)
+        with open(metadata_path, 'rb') as f:
+            self.metadata = pickle.load(f)
+        print("Loading complete.")
 
+        print("Loading sentence transformer models...")
+        self.bi_encoder = SentenceTransformer('all-MiniLM-L6-v2')
+        self.cross_encoder = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')
+        print("Models loaded.")
 
-def create_conversational_agent():
-    """
-    Builds and returns the complete conversational RAG chain.
-    This function encapsulates the entire logic for the core.
-    """
-    print("Building the improved conversational core...")
+        print("RAG Pipeline Initialized Successfully.")
 
-    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0, api_key=config.OPENAI_API_KEY)
+    def _create_prompt(self, question: str, context: list[str]) -> str:
+        context_str = "\n\n---\n\n".join(context)
 
-    embeddings = custom_bert_embedder.CustomBertEmbedder(
-        model_path=config.EMBEDDING_MODEL_PATH
-    )
+        prompt = f"""You are a highly intelligent and helpful personal email assistant. 
+        Your task is to synthesize the information from the user's emails to answer their question.
+        Use the following pieces of context from email conversations to answer the question at the end.
 
-    vectorstore = Chroma(
-        collection_name=config.CHROMA_COLLECTION,
-        persist_directory=config.CHROMA_DB_PATH,
-        embedding_function=embeddings
-    )
+        Each piece of context starts with the date and the sender. Use this information to provide a clear timeline 
+        and attribute information to the correct person or service (e.g., "On May 15th, an email from Amazon says...").
 
-    # FIX 1: Create BOTH a self-query retriever and a standard vector retriever
-    document_content_description = "The body text of an email"
-    self_query_retriever = SelfQueryRetriever.from_llm(
-        llm,
-        vectorstore,
-        document_content_description,
-        metadata_field_info,
-        verbose=True
-    )
-    vector_retriever = vectorstore.as_retriever(search_kwargs={"k": 5})
-    print("Retrievers created.")
+        Summarize the findings from the emails. If the emails mention where to find more information, point that out. 
+        Based *only* on the text provided, generate a helpful response. 
 
-    # FIX 2: Define the hybrid retriever function to combine and deduplicate results
-    def hybrid_retriever(query):
-        print(f"Executing hybrid search for query: '{query}'")
-        # Try self-query retriever first
+    Context from emails:
+    ---
+    {context_str}
+    ---
+    User's Question: {question}
+    Helpful Answer:"""
+        return prompt
+
+    def query(self, question: str, k_retriever: int = 20, k_reranker: int = 5) -> str:
+        """
+        Performs the full RAG process with a re-ranking step.
+        """
+        print(f"\nReceived query: '{question}'")
+
+        print(f"1. Retrieving top {k_retriever} candidates with bi-encoder...")
+
+        query_embedding = self.bi_encoder.encode([question], convert_to_numpy=True).astype('float32')
+        faiss.normalize_L2(query_embedding)
+
+        distances, indices = self.index.search(query_embedding, k_retriever)
+        retrieved_docs = [self.metadata[idx] for idx in indices[0] if idx != -1]
+        print("Done retrieving.")
+
+        print(f"2. Re-ranking the retrieved candidates with cross-encoder...")
+        pairs = [[question, doc['chunk_text']] for doc in retrieved_docs]
+
+        if not pairs:
+            return "I could not find any relevant information in your emails to answer this question."
+
+        scores = self.cross_encoder.predict(pairs, batch_size=8)
+        print("Done scoring.")
+
+        scored_docs = list(zip(scores, retrieved_docs))
+        scored_docs.sort(key=lambda x: x[0], reverse=True)
+
+        print(f"3. Selecting top {k_reranker} documents after re-ranking...")
+        final_contexts = []
+        for score, doc in scored_docs[:k_reranker]:
+            sender = doc.get('from', 'Unknown Sender')
+            context_line = f"On {doc['date']}, an email from '{sender}' with subject '{doc['email_subject']}':\n{doc['chunk_text']}"
+            final_contexts.append(context_line)
+            print(f"Selected doc on {doc['date']} from '{sender}' with score {score:.4f}")
+
+        print("4. Creating prompt for LLM...")
+        prompt = self._create_prompt(question, final_contexts)
+
+        print("5. Sending request to OpenAI API...")
         try:
-            self_results = self_query_retriever.get_relevant_documents(query, verbose=True)
-            print(f"SelfQueryRetriever found {len(self_results)} documents.")
+            response = openai.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": "You are a helpful email assistant."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.7,
+                max_tokens=250
+            )
+            final_answer = response.choices[0].message.content
+            print("6. Received answer from OpenAI.")
+            print(f"LLM Raw Output: \n'{final_answer}'\n")
+            return final_answer
         except Exception as e:
-            print(f"SelfQueryRetriever failed with error: {e}")
-            self_results = []
+            print(f"An error occurred with the OpenAI API: {e}")
+            return "Sorry, I encountered an error while trying to generate an answer."
 
-        # Always get results from basic vector similarity search as a fallback/supplement
-        vector_results = vector_retriever.get_relevant_documents(query)
-        print(f"Standard Vector Retriever found {len(vector_results)} documents.")
-
-        # Combine and deduplicate the results
-        combined_results = []
-        seen_ids = set()
-        for doc in self_results + vector_results:
-            # Use a unique identifier from metadata to prevent duplicates
-            doc_id = doc.metadata.get('source_email_id', '') + str(doc.metadata.get('date', ''))
-            if doc_id not in seen_ids:
-                combined_results.append(doc)
-                seen_ids.add(doc_id)
-
-        print(f"Hybrid search returning {len(combined_results)} unique documents.")
-        return combined_results
-
-    # FIX 3: Use the custom hybrid_retriever in the RAG chain
-    retriever = RunnableLambda(hybrid_retriever)
-
-    # Master Prompt (guides the LLM on how to use the retrieved context to answer the question)
-    prompt_template = """
-You are a highly intelligent and diligent personal email assistant. Your task is to answer the user's question based *only* on the context provided from their email inbox.
-
-- Be concise and directly answer the question.
-- Cite the sender and date of the source email(s) for your answer.
-- If the context does not contain the answer, you MUST state that you could not find any relevant emails. Do not make up information.
-
-CONTEXT FROM EMAILS:
-{context}
-
-USER'S QUESTION:
-{question}
-
-YOUR ANSWER:
-"""
-    prompt = ChatPromptTemplate.from_template(prompt_template)
-
-    rag_chain = (
-            {
-                "context": retriever | _format_docs,
-                "question": RunnablePassthrough()
-            }
-            | prompt
-            | llm
-            | StrOutputParser()
-    )
-    print("Improved conversational RAG chain successfully built.")
-
-    return rag_chain
+# verification
+# if __name__ == '__main__':
+#     try:
+#         pipeline = RAGPipeline()
+#
+#
+#         test_question_1 = "What are the instructions for the SURE poster presentation?"
+#         answer_1 = pipeline.query(test_question_1)
+#         print("\n" + "=" * 50)
+#         print(f"Question: {test_question_1}")
+#         print(f"Answer: {answer_1}")
+#         print("=" * 50 + "\n")
+#
+#
+#         test_question_2 = "Is there any marketing email offering a 50% discount? "
+#         answer_2 = pipeline.query(test_question_2)
+#         print("\n" + "=" * 50)
+#         print(f"Question: {test_question_2}")
+#         print(f"Answer: {answer_2}")
+#         print("=" * 50 + "\n")
+#
+#     except Exception as e:
+#         print(f"An error occurred during pipeline initialization or testing: {e}")
