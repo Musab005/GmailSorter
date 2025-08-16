@@ -3,7 +3,7 @@ import pickle
 import os
 from sentence_transformers import SentenceTransformer, CrossEncoder
 import openai
-from .. import config
+from backend import config
 
 
 class RAGPipeline:
@@ -17,7 +17,8 @@ class RAGPipeline:
 
         scripts_dir = os.path.dirname(__file__)
         app_dir = os.path.dirname(scripts_dir)
-        vectorstore_dir = os.path.join(app_dir, 'vectorstore')
+        backend_dir = os.path.dirname(app_dir)
+        vectorstore_dir = os.path.join(backend_dir, 'vectorstore')
         faiss_index_path = os.path.join(vectorstore_dir, 'index.faiss')
         metadata_path = os.path.join(vectorstore_dir, 'metadata.pkl')
 

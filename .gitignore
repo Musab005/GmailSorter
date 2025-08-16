@@ -1,11 +1,11 @@
 .env
 /credentials
-/app/src/global_store.py
-/data
+/backend/src/global_store.py
+/backend/data
 /BERT_model
 taxonomy.md
 /.venv
 BERT_model
 /chroma_db
-/app/vectorstore/index.faiss
-/app/vectorstore/metadata.pkl
+/backend/vectorstore/index.faiss
+/backend/vectorstore/metadata.pkl
