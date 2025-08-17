@@ -1,4 +1,4 @@
-# Zephyr - A Conversational Email Assistant
+# Zephyr - Personal Email Assistant
 
 Developing a conversational email assistant using langchain.
 
