@@ -1,0 +1,84 @@
+/* Zephyr Dark Theme Styles */
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: radial-gradient(ellipse at bottom, #0a0f1f, #05070d);
+  color: #e5e7eb; /* default light gray text */
+  overflow: hidden;
+}
+
+
+.zephyr-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(from 180deg at 50% 50%, #1e3a8a, #4f46e5, #06b6d4, #1e3a8a);
+  animation: rotate-bg 40s linear infinite;
+  opacity: 0.08;
+  z-index: -2;
+}
+
+@keyframes rotate-bg {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+.zephyr-title {
+  background: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc, #38bdf8);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  animation: gradient-flow 6s ease-in-out infinite;
+  text-shadow: 0 0 12px rgba(99, 102, 241, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+@keyframes gradient-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+
+@keyframes hue-rotate {
+  0%   { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+.animate-hue-spin {
+  animation: hue-rotate 6s linear infinite;
+}
+
+
+@keyframes caret-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.typing-caret {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: #e5e7eb;
+  margin-left: 2px;
+  animation: caret-blink 1s step-end infinite;
+}
+
+
+.chat-scroll::-webkit-scrollbar {
+  display: none;
+}
+.chat-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

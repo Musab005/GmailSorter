@@ -1,8 +1,9 @@
 import ChatInterface from './components/ChatInterface';
+import './App.css';
 
 function App() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-blue-900 text-white flex flex-col items-center justify-center p-4 font-sans">
+    <div className="relative min-h-screen bg-gray-900 text-white font-sans flex items-center justify-center overflow-hidden">
       <ChatInterface />
     </div>
   );
