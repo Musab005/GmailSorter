@@ -4,6 +4,7 @@ import os
 from sentence_transformers import SentenceTransformer, CrossEncoder
 import openai
 from backend import config
+import time
 
 
 class RAGPipeline:
@@ -48,9 +49,8 @@ class RAGPipeline:
 
         Summarize the findings from the emails. If the emails mention where to find more information, point that out. 
         Based *only* on the text provided, generate a helpful response. 
-        Keep your answer short and to the point. 
+        Keep your answer short, direct, and to the point, unless the user explicitly asks for detailed information.
         Include the date the email was sent and sender information.
-        If there are multiple emails, then summarise them with the most recent one first and mention the fact.
 
     Context from emails:
     ---
@@ -68,37 +68,51 @@ class RAGPipeline:
 
         print(f"1. Retrieving top {k_retriever} candidates with bi-encoder...")
 
+        time1 = time.time()
+
         query_embedding = self.bi_encoder.encode([question], convert_to_numpy=True).astype('float32')
         faiss.normalize_L2(query_embedding)
 
         distances, indices = self.index.search(query_embedding, k_retriever)
         retrieved_docs = [self.metadata[idx] for idx in indices[0] if idx != -1]
-        print("Done retrieving.")
+        print(retrieved_docs)
+
+        time2 = time.time()
+        elapsed_time = time2 - time1
+        print(f"Done retrieving. Elapsed time: {elapsed_time:.4f} seconds")
 
         print(f"2. Re-ranking the retrieved candidates with cross-encoder...")
+        time1 = time.time()
         pairs = [[question, doc['chunk_text']] for doc in retrieved_docs]
 
         if not pairs:
             return "I could not find any relevant information in your emails to answer this question."
 
         scores = self.cross_encoder.predict(pairs, batch_size=8)
-        print("Done scoring.")
+        time2 = time.time()
+        elapsed_time = time2 - time1
+        print(f"Done scoring. Elapsed time: {elapsed_time:.4f} seconds")
 
         scored_docs = list(zip(scores, retrieved_docs))
         scored_docs.sort(key=lambda x: x[0], reverse=True)
 
         print(f"3. Selecting top {k_reranker} documents after re-ranking...")
+        time1 = time.time()
         final_contexts = []
         for score, doc in scored_docs[:k_reranker]:
             sender = doc.get('from', 'Unknown Sender')
             context_line = f"On {doc['date']}, an email from '{sender}' with subject '{doc['email_subject']}':\n{doc['chunk_text']}"
             final_contexts.append(context_line)
             print(f"Selected doc on {doc['date']} from '{sender}' with score {score:.4f}")
+        time2 = time.time()
+        elapsed_time = time2 - time1
+        print(f" Selected re-ranked docs. Elapsed time: {elapsed_time:.4f} seconds")
 
         print("4. Creating prompt for LLM...")
         prompt = self._create_prompt(question, final_contexts)
 
         print("5. Sending request to OpenAI API...")
+        time1 = time.time()
         try:
             response = openai.chat.completions.create(
                 model="gpt-4-turbo",
@@ -110,7 +124,9 @@ class RAGPipeline:
                 ],
             )
             final_answer = response.choices[0].message.content
-            print("6. Received answer from OpenAI.")
+            time2 = time.time()
+            elapsed_time = time2 - time1
+            print(f"6. Received answer from OpenAI.  Elapsed time: {elapsed_time:.4f} seconds")
             print(f"LLM Raw Output: \n'{final_answer}'\n")
             return final_answer
         except Exception as e:
