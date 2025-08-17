@@ -2,4 +2,4 @@
 
 Developing a conversational email assistant using langchain.
 
-![RAG system architecture](CognitiveInbox-architecture.png)
+![RAG system architecture](high-level-architecture.png)
