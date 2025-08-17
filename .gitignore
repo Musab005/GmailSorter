@@ -9,3 +9,5 @@ BERT_model
 /chroma_db
 /backend/vectorstore/index.faiss
 /backend/vectorstore/metadata.pkl
+/notebooks/BERT_finetuned_v1.ipynb
+/notebooks/prototype.ipynb
