@@ -15,6 +15,7 @@ Context-Aware Answers: The LLM (gpt-4-turbo) generates accurate, helpful answers
 
 ## 🚀 Tech Stack
 Backend:	Python, Flask, Flask-CORS, FAISS, Sentence-Transformers, OpenAI API, Google Gmail API
+
 Frontend:	React, TypeScript, Vite, Tailwind CSS, Framer Motion
 
 ## High level architecture diagram
