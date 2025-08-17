@@ -50,7 +50,7 @@ class RAGPipeline:
         Based *only* on the text provided, generate a helpful response. 
         Keep your answer short and to the point. 
         Include the date the email was sent and sender information.
-        If there are multiple emails, then only provide the most recent one and mention the fact.
+        If there are multiple emails, then summarise them with the most recent one first and mention the fact.
 
     Context from emails:
     ---
@@ -60,7 +60,7 @@ class RAGPipeline:
     Helpful Answer:"""
         return prompt
 
-    def query(self, question: str, k_retriever: int = 20, k_reranker: int = 20) -> str:
+    def query(self, question: str, k_retriever: int = 30, k_reranker: int = 5) -> str:
         """
         Performs the full RAG process with a re-ranking step.
         """
