@@ -44,12 +44,15 @@ class RAGPipeline:
         Use the following pieces of context from email conversations to answer the question at the end.
 
         Each piece of context starts with the date, sender information, and email subject. 
-        Use this information to provide a clear timeline and attribute information to the correct 
+        Use this information to attribute information to the correct 
         person or service (e.g., "On May 15th, an email from Amazon says...").
 
         Summarize the findings from the emails. If the emails mention where to find more information, point that out. 
+        If there are multiple emails, only summarise the most recent email, unless the user explicitly asks to
+        summarise all emails.
         Based *only* on the text provided, generate a helpful response. 
         Keep your answer short, direct, and to the point, unless the user explicitly asks for detailed information.
+        DO NOT ask additional questions or suggest actions. Only provide the information the user has directly asked for.
         Include the date the email was sent and sender information.
 
     Context from emails:
@@ -60,7 +63,7 @@ class RAGPipeline:
     Helpful Answer:"""
         return prompt
 
-    def query(self, question: str, k_retriever: int = 30, k_reranker: int = 5) -> str:
+    def query(self, question: str, k_retriever: int = 50, k_reranker: int = 20) -> str:
         """
         Performs the full RAG process with a re-ranking step.
         """
@@ -73,9 +76,10 @@ class RAGPipeline:
         query_embedding = self.bi_encoder.encode([question], convert_to_numpy=True).astype('float32')
         faiss.normalize_L2(query_embedding)
 
+        # SEARCH(FAISS)
         distances, indices = self.index.search(query_embedding, k_retriever)
+        # RETRIEVE (METADATA LOOKUP)
         retrieved_docs = [self.metadata[idx] for idx in indices[0] if idx != -1]
-        print(retrieved_docs)
 
         time2 = time.time()
         elapsed_time = time2 - time1
@@ -88,7 +92,7 @@ class RAGPipeline:
         if not pairs:
             return "I could not find any relevant information in your emails to answer this question."
 
-        scores = self.cross_encoder.predict(pairs, batch_size=8)
+        scores = self.cross_encoder.predict(pairs)
         time2 = time.time()
         elapsed_time = time2 - time1
         print(f"Done scoring. Elapsed time: {elapsed_time:.4f} seconds")
@@ -115,7 +119,7 @@ class RAGPipeline:
         time1 = time.time()
         try:
             response = openai.chat.completions.create(
-                model="gpt-4-turbo",
+                model="gpt-5-nano",
                 messages=[
                     {"role": "developer", "content": "You are a helpful and highly intelligent email assistant. "
                                                      "Include date and sender information for the retrieved emails."
@@ -124,6 +128,7 @@ class RAGPipeline:
                 ],
             )
             final_answer = response.choices[0].message.content
+            print(response.usage)
             time2 = time.time()
             elapsed_time = time2 - time1
             print(f"6. Received answer from OpenAI.  Elapsed time: {elapsed_time:.4f} seconds")
